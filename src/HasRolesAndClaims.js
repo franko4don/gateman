@@ -68,9 +68,8 @@ class HasRolesAndClaims {
                     return "this claim was not assigned to the user";
                 }
             } else {
-                throw new Error({
-                    message: "The claim does not exist. Consider creating it first"
-                });
+                throw new Error("The claim does not exist. Consider creating it first"
+                );
             }
         } catch (error) {
             throw error;
@@ -99,9 +98,7 @@ class HasRolesAndClaims {
                     return usrRole;
                 }
             } else {
-                throw new Error({
-                    message: "The role does not exist. Consider creating it first"
-                });
+                throw new Error("The role does not exist. Consider creating it first");
             }
         } catch (error) {
             throw error;
@@ -129,9 +126,7 @@ class HasRolesAndClaims {
                     return "this role was not assigned to the user";
                 }
             } else {
-                throw new Error({
-                    message: "The role does not exist. Consider creating it first"
-                });
+                throw new Error("The role does not exist. Consider creating it first");
             }
         } catch (error) {
             throw error;
