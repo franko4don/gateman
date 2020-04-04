@@ -14,8 +14,9 @@ describe('Gateman Claims', function(){
         done();
     });
     after('ensuring everything is cleaned up',function(done){
-        mongoose.disconnect();
         done();
+        // mongoose.disconnect();
+        
     });
 
     describe('createClaim', function () {
@@ -64,8 +65,9 @@ describe('Gateman Roles',function(){
         done();
     });
     after('ensuring everything is cleaned up',function(done){
-        mongoose.disconnect();
         done();
+        mongoose.disconnect();
+        
     });
     describe('createRole', function(){
         it ('should return a role object if created successfully', async()=>{            

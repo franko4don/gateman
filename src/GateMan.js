@@ -13,9 +13,9 @@ class GateMan {
      * @mongoose a mongoose connection object
      */
     constructor(mongoose){
-        role = role(mongoose);
-        claim = claim(mongoose);
-        roleClaim = roleClaim(mongoose);
+        this.roler = role(mongoose);
+        this.claim = claim(mongoose);
+        this.roleClaim = roleClaim(mongoose);
     }
 
      /**
@@ -30,9 +30,9 @@ class GateMan {
         try {
             if (roleName.trim() === "") throw new Error("role name cannot be empty");
             if (typeof(roleName) !== 'string') throw new Error("role name must be a string");
-            let dbRole = await role.findOne({ name: roleName });
+            let dbRole = await this.roler.findOne({ name: roleName });
             if (dbRole) return dbRole;
-            let newDbRole = await role.create({ name: roleName });
+            let newDbRole = await this.roler.create({ name: roleName });
             return newDbRole;
         } catch (error) {
             throw error;
@@ -50,7 +50,7 @@ class GateMan {
     async removeRole(roleName){
         try {
             if (typeof(roleName) !== 'string') throw new Error('role name must be a string');
-            return await role.findOneAndDelete({name: roleName});
+            return await this.roler.findOneAndDelete({name: roleName});
         } catch (error) {
             throw error;
         }        
@@ -68,7 +68,7 @@ class GateMan {
         try {
             if (roleName.trim() === '') return {};
             if (typeof(roleName) !== 'string') throw new Error('role name must be a string');
-            let rol = await role.findOne({name:roleName});
+            let rol = await this.roler.findOne({name:roleName});
             return rol;
         } catch (error) {
             throw error;
@@ -84,7 +84,7 @@ class GateMan {
      ```
      */
     allow(rolename){
-        let linker = new allowOps(role, claim, roleClaim);
+        let linker = new allowOps(this.roler, this.claim, this.roleClaim);
         if (rolename.trim() === '') throw new Error('role name must be provided');
         if (typeof(rolename) !== 'string') throw new Error('role name must be a string');
         linker.operation = 'allow';
@@ -102,7 +102,7 @@ class GateMan {
      ```
      */
     disallow(rolename){
-        let linker = new disallowOps(role, claim, roleClaim);
+        let linker = new disallowOps(this.roler, this.claim, this.roleClaim);
         if (rolename.trim() === '') throw new Error('role name must be provided');
         if (typeof(rolename) !== 'string') throw new Error('role name must be a string');
         linker.operation = 'dissallow';
@@ -120,7 +120,7 @@ class GateMan {
      */
     async getRoles(){
         try {
-            return role.find({});
+            return this.roler.find({});
         } catch (error) {
             throw error;
         }
@@ -138,11 +138,11 @@ class GateMan {
     async createClaim(claimName) {
         try {
             if (claimName === "") return "claim name cannot be empty";
-            let dbClaim = await claim.findOne({ name: claimName });
+            let dbClaim = await this.claim.findOne({ name: claimName });
             if (dbClaim) {
                 return dbClaim;
             } else {
-                let newDbClaim = await claim.create({ name: claimName });
+                let newDbClaim = await this.claim.create({ name: claimName });
                 return newDbClaim;
             }
         } catch (error) {
@@ -160,7 +160,7 @@ class GateMan {
      ``` 
      */
     async removeClaim(claimName){
-        return claim.findOneAndDelete({name: claimName});
+        return this.claim.findOneAndDelete({name: claimName});
     }
 
     /**
@@ -172,7 +172,7 @@ class GateMan {
      ```
      */
     async getClaims(){
-        return claim.find({});
+        return this.claim.find({});
     }
 
     /**
@@ -184,7 +184,7 @@ class GateMan {
      ```
      */
     async getClaim(claimName){
-        return claim.findOne({name:claimName});
+        return this.claim.findOne({name:claimName});
     }
 
     /**
@@ -198,9 +198,9 @@ class GateMan {
     async getRoleClaims(roleName){
         try {
             let result = [];
-            let dbRole = await role.findOne({ name: roleName });
+            let dbRole = await this.roler.findOne({ name: roleName });
             if (dbRole) {
-                let roleClaims = await roleClaim.find({ role: dbRole._id }).populate('role claim');
+                let roleClaims = await this.roleClaim.find({ role: dbRole._id }).populate('role claim');
                 if (roleClaims.length === 0) return result;
                 for (let i=0; i<roleClaims.length; i++){
                     result.push(roleClaims[i].claim && roleClaims[i].claim.name);
@@ -224,7 +224,7 @@ class GateMan {
      ```
      */
     role(roleName){
-        let linker = new roleOps(role, claim, roleClaim);
+        let linker = new roleOps(this.roler, this.claim, this.roleClaim);
         if (roleName.trim() === '') throw new Error('role name must be provided');
         if (typeof(roleName) !== 'string') throw new Error('role name must be a string');
         linker.roleName = roleName;
