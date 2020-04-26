@@ -1,9 +1,13 @@
 var role = require('./Models/Role');
 var claim = require('./Models/Claim');
+var userRole = require('./Models/UserRole');
+var userClaim = require('./Models/UserClaim');
 var roleClaim = require('./Models/RoleClaim');
 var allowOps = require('./AllowOperations');
 var disallowOps = require('./DisallowOperations');
 var roleOps = require('./RoleOperations');
+var userRolesAndClaims = require('./UserRolesAndClaims');
+
 
 class GateMan {
 
@@ -16,6 +20,8 @@ class GateMan {
         this.roler = role(mongoose);
         this.claim = claim(mongoose);
         this.roleClaim = roleClaim(mongoose);
+        this.userRole = userRole(mongoose);
+        this.userClaim = userClaim(mongoose);
     }
 
      /**
@@ -229,6 +235,19 @@ class GateMan {
         if (typeof(roleName) !== 'string') throw new Error('role name must be a string');
         linker.roleName = roleName;
         return linker;
+    }
+
+    async getAllUsersRoles(){
+
+        let allUsersRoles = new userRolesAndClaims(this.userRole, this.userClaim);
+        
+        return await allUsersRoles.getAllUsersRoles();
+    }
+
+    async getAllUsersClaims(){
+        let allUsersClaims = new userRolesAndClaims(this.userRole, this.userClaim);
+        
+        return await allUsersClaims.getAllUsersClaims();
     }
 
 }
